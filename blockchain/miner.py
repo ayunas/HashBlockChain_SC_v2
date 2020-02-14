@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from timeit import default_timer as timer
 
-import random
+import random, multiprocessing
 
 
 def proof_of_work(last_proof):
@@ -75,6 +75,8 @@ if __name__ == '__main__':
         exit()
     # Run forever until interrupted
 
+    total_coins = 0
+
     def mine_coins():
         while True:
         # Get the last proof from the server
@@ -103,13 +105,18 @@ if __name__ == '__main__':
                 # break
 
             if data.get('message') == 'New Block Forged':
-                coins_mined += 1
+                global total_coins
+                coins_mined = coins_mined + 1
+                total_coins += 1
                 print("Total coins mined: " + str(coins_mined))
             else:
                 print(data.get('message'))
 
     while mine_coins() is None:
+        
         mine_coins()
+    
+    print('total coins mined: ', total_coins)
 
 
     
