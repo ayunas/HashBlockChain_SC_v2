@@ -47,3 +47,8 @@ if __name__ == '__main__':
     end = time()
 
     print('processing time: ', end - start)
+
+
+'''
+insert a weight and its index as a key/val pair into the hash table.  then calculate the weight of another item where the w1 + w2 = limit.  then attempt to to retrieve a weight matching the w2.  if its there.  the index position is stored as the value of the key for the calculated weight.  if not, keep trying till all weights have been looped through."
+'''
