@@ -24,23 +24,35 @@ def proof_of_work(last_proof):
 
     print("Searching for next proof")
     proof = 0
-    #  TODO: Your code here
+    
+    last_hash = hash_proof(last_proof)
+    current_hash = hash_proof(proof)
+
+    while last_hash[-6:] != current_hash[:6]:
+        proof += 1
+        current_hash = hash_proof(proof)
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
+    print('last_hash: ' + last_hash, last_hash[-6:])
+    print('current_hash: ' + current_hash, current_hash[:6])
     return proof
 
+def hash_proof(proof):
+    encoded_proof = str(proof).encode("utf-8")
+    return hashlib.sha256(encoded_proof).hexdigest()
 
-def valid_proof(last_hash, proof):
-    """
-    Validates the Proof:  Multi-ouroborus:  Do the last six characters of
-    the hash of the last proof match the first six characters of the hash
-    of the new proof?
 
-    IE:  last_hash: ...AE9123456, new hash 123456E88...
-    """
+# def valid_proof(last_hash, proof):
+#     """
+#     Validates the Proof:  Multi-ouroborus:  Do the last six characters of
+#     the hash of the last proof match the first six characters of the hash
+#     of the new proof?
 
-    # TODO: Your code here!
-    pass
+#     IE:  last_hash: ...AE9123456, new hash 123456E88...
+#     """
+
+#     # TODO: Your code here!
+#     pass
 
 
 if __name__ == '__main__':
@@ -62,19 +74,42 @@ if __name__ == '__main__':
         print("ERROR: You must change your name in `my_id.txt`!")
         exit()
     # Run forever until interrupted
-    while True:
+
+    def mine_coins():
+        while True:
         # Get the last proof from the server
-        r = requests.get(url=node + "/last_proof")
-        data = r.json()
-        new_proof = proof_of_work(data.get('proof'))
+            r = requests.get(url=node + "/last_proof")
+            print('response', r.content)
+            try:
+                data = r.json()
+            except ValueError:
+                print("Error: Non-json response")
+                print("Response returned", r)
+                return None
+                # break
 
-        post_data = {"proof": new_proof,
-                     "id": id}
+            new_proof = proof_of_work(data.get('proof'))
 
-        r = requests.post(url=node + "/mine", json=post_data)
-        data = r.json()
-        if data.get('message') == 'New Block Forged':
-            coins_mined += 1
-            print("Total coins mined: " + str(coins_mined))
-        else:
-            print(data.get('message'))
+            post_data = {"proof": new_proof,
+                        "id": id}
+
+            r = requests.post(url=node + "/mine", json=post_data)
+            try:
+                data = r.json()
+            except ValueError:
+                print("Error: Non-json response")
+                print("Response returned", r)
+                return None
+                # break
+
+            if data.get('message') == 'New Block Forged':
+                coins_mined += 1
+                print("Total coins mined: " + str(coins_mined))
+            else:
+                print(data.get('message'))
+
+    while mine_coins() is None:
+        mine_coins()
+
+
+    
