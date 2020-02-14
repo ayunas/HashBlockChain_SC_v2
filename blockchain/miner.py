@@ -106,15 +106,27 @@ if __name__ == '__main__':
 
             if data.get('message') == 'New Block Forged':
                 global total_coins
-                coins_mined = coins_mined + 1
+                # coins_mined = coins_mined + 1
                 total_coins += 1
                 print("Total coins mined: " + str(coins_mined))
             else:
                 print(data.get('message'))
 
     while mine_coins() is None:
-        
         mine_coins()
+    
+    
+
+    # p1 = multiprocessing.Process(target=mine_coins(), args=(randint(1,100), randint(1,100)))
+    # p2 = multiprocessing.Process(target=add, args=(randint(1,100), randint(1,100)))
+    # p3 = multiprocessing.Process(target=add, args=(randint(1,100), randint(1,100)))
+    # p4 = multiprocessing.Process(target=add, args=(randint(1,100), randint(1,100)))
+
+
+    # p1.start()
+    # p2.start()
+    # p3.start()
+    # p4.start()
     
     print('total coins mined: ', total_coins)
 
