@@ -18,7 +18,7 @@ def get_indices_of_item_weights(weights, length, limit):
         w2 = (limit - w)
         # print('w1', w)
         # print('w2', w2)
-        print('possible addition', w,w2)
+        # print('possible addition', w,w2)
         j = hash_table_retrieve(ht,w2)
         # print('i',i)
         if j:
